@@ -64,19 +64,19 @@ export default {
             if (response.status === 200) {
               this.$store.commit("SET_BREWERY_ID", response.data);
             }
-          })
-          .catch((error) => {
-            let errorMessage;
-            if (error.response) {
-              errorMessage = `${error.response.status}: ${error.response.data.error}, ${error.response.data.message}`;
-            } else if (error.request) {
-              errorMessage =
-                "Error submitting form. Server could not be reached.";
-            } else {
-              errorMessage =
-                "Error submitting form. Request could not be created.";
-            }
           });
+        // .catch((error) => {
+        //   let errorMessage;
+        //   if (error.response) {
+        //     errorMessage = `${error.response.status}: ${error.response.data.error}, ${error.response.data.message}`;
+        //   } else if (error.request) {
+        //     errorMessage =
+        //       "Error submitting form. Server could not be reached.";
+        //   } else {
+        //     errorMessage =
+        //       "Error submitting form. Request could not be created.";
+        //   }
+        // });
       }
     },
   },
