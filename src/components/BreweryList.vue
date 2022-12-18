@@ -2,39 +2,48 @@
   <div class="brewery-list">
     <h1>Brewery List</h1>
     <div class="brewery-card-list">
-      <div class="brewery-card" v-for="brewery in this.$store.state.breweries" v-bind:key="brewery.breweryId">
-        <img v-bind:src="brewery.breweryLogo" v-bind:alt="brewery.breweryName" v-on:click="goToBrewery(brewery.breweryId)">
-        <router-link v-bind:to="{ name: 'brewery', params: {id: brewery.breweryId}}">{{brewery.breweryName}}</router-link>
-        <p class="location">{{brewery.address.city}}, {{brewery.address.state}}</p>
+      <div
+        class="brewery-card"
+        v-for="brewery in this.$store.state.breweries"
+        v-bind:key="brewery.breweryId"
+      >
+        <img
+          v-bind:src="brewery.breweryLogo"
+          v-bind:alt="brewery.breweryName"
+          v-on:click="goToBrewery(brewery.breweryId)"
+        />
+        <router-link
+          v-bind:to="{ name: 'brewery', params: { id: brewery.breweryId } }"
+          >{{ brewery.breweryName }}</router-link
+        >
+        <p class="location">
+          {{ brewery.address.city }}, {{ brewery.address.state }}
+        </p>
       </div>
     </div>
   </div>
 </template>
 <script>
-import breweryService from '../services/BreweryService.js';
+import breweryService from "../services/BreweryService.js";
 
 export default {
-  name: 'brewery-list',
+  name: "brewery-list",
   methods: {
     getBreweries() {
-      breweryService.list()
-      .then(response => {
+      breweryService.list().then((response) => {
         if (response.status === 200) {
-          this.$store.commit('SET_BREWERIES', response.data);
-        } else {
-          console.log(response.status)
+          this.$store.commit("SET_BREWERIES", response.data);
         }
-        
       });
     },
     goToBrewery(breweryId) {
-      this.$router.push({ name: 'brewery', params: { id: breweryId }});
-    }
+      this.$router.push({ name: "brewery", params: { id: breweryId } });
+    },
   },
   created() {
     this.getBreweries();
-  }
-}
+  },
+};
 </script>
 <style scoped>
 .brewery-list {

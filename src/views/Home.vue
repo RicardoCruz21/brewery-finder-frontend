@@ -5,19 +5,30 @@
       <h1>Cheers!</h1>
       <div class="card-list">
         <div class="nav-card">
-          <router-link v-bind:to="{ name: 'breweries' }">View all Breweries</router-link>
+          <router-link v-bind:to="{ name: 'breweries' }"
+            >View all Breweries</router-link
+          >
         </div>
         <div class="nav-card" v-if="isBrewer">
-          <router-link v-bind:to="{ name: 'brewery', params: { id: breweryId } }">My Brewery</router-link>
+          <router-link
+            v-bind:to="{ name: 'brewery', params: { id: breweryId } }"
+            >My Brewery</router-link
+          >
         </div>
         <div class="nav-card" v-if="isBrewer">
-          <router-link v-bind:to="{ name: 'manageBrewery' }">Manage Brewery</router-link>
+          <router-link v-bind:to="{ name: 'manageBrewery' }"
+            >Manage Brewery</router-link
+          >
         </div>
         <div class="nav-card" v-if="isBrewer">
-          <router-link v-bind:to="{ name: 'manageBeers' }">Manage Beers</router-link>
+          <router-link v-bind:to="{ name: 'manageBeers' }"
+            >Manage Beers</router-link
+          >
         </div>
         <div class="nav-card" v-if="isAdmin">
-          <router-link v-bind:to="{ name: 'addBrewery' }"> Add Brewery</router-link>
+          <router-link v-bind:to="{ name: 'addBrewery' }">
+            Add Brewery</router-link
+          >
         </div>
       </div>
     </div>
@@ -25,53 +36,53 @@
 </template>
 
 <script>
-import Navigation from '../components/Navigation.vue';
-import userService from '../services/UserService.js';
+import Navigation from "../components/Navigation.vue";
+import userService from "../services/UserService.js";
 
 export default {
   name: "home",
   components: {
-    Navigation
+    Navigation,
   },
   computed: {
     isAdmin() {
-      return this.$store.state.user.authorities[0].name === 'ROLE_ADMIN';
+      return this.$store.state.user.authorities[0].name === "ROLE_ADMIN";
     },
     isBrewer() {
-      return this.$store.state.user.authorities[0].name === 'ROLE_BREWER';
+      return this.$store.state.user.authorities[0].name === "ROLE_BREWER";
     },
     breweryId() {
       return this.$store.state.breweryId;
-    }
+    },
   },
   methods: {
     getBreweryId() {
       if (this.isBrewer) {
-        userService.getBrewerBreweryId(this.$store.state.user.id)
-        .then(response => {
-          if (response.status === 200) {
-            this.$store.commit('SET_BREWERY_ID', response.data);
-          } else {
-            console.log(response.status);
-          }
-        })
-        .catch(error => {
-          let errorMessage;
-          if (error.response) {
-            errorMessage = `${error.response.status}: ${error.response.data.error}, ${error.response.data.message}`;
-          } else if (error.request) {
-            errorMessage = 'Error submitting form. Server could not be reached.';
-          } else {
-            errorMessage = 'Error submitting form. Request could not be created.';
-          }
-          console.log(errorMessage);
-        })
+        userService
+          .getBrewerBreweryId(this.$store.state.user.id)
+          .then((response) => {
+            if (response.status === 200) {
+              this.$store.commit("SET_BREWERY_ID", response.data);
+            }
+          })
+          .catch((error) => {
+            let errorMessage;
+            if (error.response) {
+              errorMessage = `${error.response.status}: ${error.response.data.error}, ${error.response.data.message}`;
+            } else if (error.request) {
+              errorMessage =
+                "Error submitting form. Server could not be reached.";
+            } else {
+              errorMessage =
+                "Error submitting form. Request could not be created.";
+            }
+          });
       }
-    }
+    },
   },
   created() {
     this.getBreweryId();
-  }
+  },
 };
 </script>
 

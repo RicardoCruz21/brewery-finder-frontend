@@ -1,18 +1,28 @@
 <template>
   <div class="brewery-info">
-    <h1>{{breweryName}}</h1>
+    <h1>{{ breweryName }}</h1>
     <div class="container">
       <div class="brewery-contact-info">
         <div class="img-container">
-          <img class="brewery-logo" v-bind:src="breweryLogo" v-bind:alt="breweryName + ' logo'">
+          <img
+            class="brewery-logo"
+            v-bind:src="breweryLogo"
+            v-bind:alt="breweryName + ' logo'"
+          />
         </div>
         <div class="contact-info">
           <h3>Contact Us</h3>
           <p>{{ streetAddress }}</p>
           <p>{{ address }}</p>
-          <a class="links" v-bind:href="'tel:' + phoneNumber">{{ phoneNumber }}</a>
-          <a class="links" v-bind:href="'mailto:' + emailAddress">{{ emailAddress }}</a>
-          <a class="links" target="_blank" v-bind:href="websiteUrl">{{ websiteUrl }}</a>
+          <a class="links" v-bind:href="'tel:' + phoneNumber">{{
+            phoneNumber
+          }}</a>
+          <a class="links" v-bind:href="'mailto:' + emailAddress">{{
+            emailAddress
+          }}</a>
+          <a class="links" target="_blank" v-bind:href="websiteUrl">{{
+            websiteUrl
+          }}</a>
         </div>
         <div class="business-hours">
           <h3>Business Hours</h3>
@@ -35,99 +45,106 @@
         </div>
       </div>
       <div class="brewery-description">
-        <img class="brewery-image" v-bind:src="breweryImage" v-bind:alt="breweryName + ' image'">
+        <img
+          class="brewery-image"
+          v-bind:src="breweryImage"
+          v-bind:alt="breweryName + ' image'"
+        />
         <div class="brewery-history">
           <h3>Brewery History</h3>
           <p class="brewery-desc">{{ breweryHistory }}</p>
         </div>
-        
       </div>
     </div>
   </div>
 </template>
 
 <script>
-import breweryService from '../services/BreweryService.js';
+import breweryService from "../services/BreweryService.js";
 
 export default {
-    name: 'brewery-info',
-    data() {
-      return {
-        breweryName: '',
-        websiteUrl: '',
-        emailAddress: '',
-        phoneNumber: '',
-        breweryLogo: '',
-        breweryImage: '',
-        breweryHistory: '',
-        active: false,
-        streetAddress: '',
-        city: '',
-        state: '',
-        zipcode: '',
-        hours: [],
-      }
+  name: "brewery-info",
+  data() {
+    return {
+      breweryName: "",
+      websiteUrl: "",
+      emailAddress: "",
+      phoneNumber: "",
+      breweryLogo: "",
+      breweryImage: "",
+      breweryHistory: "",
+      active: false,
+      streetAddress: "",
+      city: "",
+      state: "",
+      zipcode: "",
+      hours: [],
+      errorMessage: "",
+    };
   },
-    computed: {
-        address() {
-            return `${this.city}, ${this.state} ${this.zipcode}`;
-        },
-        businessHours() {
-          return this.hours.map(hour => {
-            return {
-              hoursId: hour.hoursId,
-              day: hour.day,
-              openingHour: this.displayTime(hour.openingHour),
-              closingHour: this.displayTime(hour.closingHour)
-            };
-          })
-        }
+  computed: {
+    address() {
+      return `${this.city}, ${this.state} ${this.zipcode}`;
     },
-    methods: {
+    businessHours() {
+      return this.hours.map((hour) => {
+        return {
+          hoursId: hour.hoursId,
+          day: hour.day,
+          openingHour: this.displayTime(hour.openingHour),
+          closingHour: this.displayTime(hour.closingHour),
+        };
+      });
+    },
+  },
+  methods: {
     getCurrentBrewery() {
-      breweryService.get(this.$route.params.id)
-      .then(response => {
-        if (response.status === 200) {
-          this.$store.commit('SET_CURRENT_BREWERY', response.data);
-          this.breweryName = response.data.breweryName;
-          this.websiteUrl = response.data.websiteUrl;
-          this.emailAddress = response.data.emailAddress;
-          this.phoneNumber = response.data.phoneNumber;
-          this.breweryLogo = response.data.breweryLogo;
-          this.breweryImage = response.data.breweryImage;
-          this.breweryHistory = response.data.breweryHistory;
-          this.active = response.data.active;
-          this.streetAddress = response.data.address.streetAddress;
-          this.city = response.data.address.city;
-          this.state = response.data.address.state;
-          this.zipcode = response.data.address.zipcode;
-          this.hours = response.data.hours
-        } else {
-          console.log(response.status);
-        }
-      })
-      .catch(error => {
-          let errorMessage;
-          if (error.response) {
-            errorMessage = `${error.response.status}: ${error.response.data.error}, ${error.response.data.message}`;
-          } else if (error.request) {
-            errorMessage = 'Error submitting form. Server could not be reached.';
-          } else {
-            errorMessage = 'Error submitting form. Request could not be created.';
+      breweryService
+        .get(this.$route.params.id)
+        .then((response) => {
+          if (response.status === 200) {
+            this.$store.commit("SET_CURRENT_BREWERY", response.data);
+            this.breweryName = response.data.breweryName;
+            this.websiteUrl = response.data.websiteUrl;
+            this.emailAddress = response.data.emailAddress;
+            this.phoneNumber = response.data.phoneNumber;
+            this.breweryLogo = response.data.breweryLogo;
+            this.breweryImage = response.data.breweryImage;
+            this.breweryHistory = response.data.breweryHistory;
+            this.active = response.data.active;
+            this.streetAddress = response.data.address.streetAddress;
+            this.city = response.data.address.city;
+            this.state = response.data.address.state;
+            this.zipcode = response.data.address.zipcode;
+            this.hours = response.data.hours;
           }
-          console.log(errorMessage);
+        })
+        .catch((error) => {
+          if (error.response) {
+            this.errorMessage = `${error.response.status}: ${error.response.data.error}, ${error.response.data.message}`;
+          } else if (error.request) {
+            this.errorMessage =
+              "Error submitting form. Server could not be reached.";
+          } else {
+            this.errorMessage =
+              "Error submitting form. Request could not be created.";
+          }
         });
     },
     displayTime(timeString) {
       const now = new Date();
-      let tempDate = new Date(now.toDateString() + ' ' + timeString);
-      return tempDate.toLocaleString('en-US', { hour: 'numeric', minute: 'numeric', hour12: true });
-    }
+      let tempDate = new Date(now.toDateString() + " " + timeString);
+      return tempDate.toLocaleString("en-US", {
+        hour: "numeric",
+        minute: "numeric",
+        hour12: true,
+      });
+    },
   },
   created() {
     this.getCurrentBrewery();
-  }
-}
+  },
+};
 </script>
 <style scoped>
 .brewery-info {

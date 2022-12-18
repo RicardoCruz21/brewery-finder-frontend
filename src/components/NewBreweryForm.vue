@@ -5,34 +5,72 @@
       <h2>Brewery Information</h2>
       <div class="data-inputs">
         <label for="name">Brewery Name</label>
-        <input type="text" class="form-control" v-model="brewery.name" required />
+        <input
+          type="text"
+          class="form-control"
+          v-model="brewery.name"
+          required
+        />
       </div>
       <div class="data-inputs">
         <label for="user">Select Brewer User</label>
-        <select name="user" class="form-control" v-model.number="brewery.userId" required>
+        <select
+          name="user"
+          class="form-control"
+          v-model.number="brewery.userId"
+          required
+        >
           <option value=""></option>
-          <option v-for="user in this.$store.state.beerLovers" v-bind:key="user.id" v-bind:value="user.id">{{ user.username }}</option>
+          <option
+            v-for="user in this.$store.state.beerLovers"
+            v-bind:key="user.id"
+            v-bind:value="user.id"
+          >
+            {{ user.username }}
+          </option>
         </select>
       </div>
       <div class="data-inputs">
         <label for="streetAddress">Street Address</label>
-        <input type="text" class="form-control" v-model="brewery.streetAddress" required />
+        <input
+          type="text"
+          class="form-control"
+          v-model="brewery.streetAddress"
+          required
+        />
       </div>
       <div class="data-inputs">
         <label for="city">City</label>
-        <input type="text" class="form-control" v-model="brewery.city" required />
+        <input
+          type="text"
+          class="form-control"
+          v-model="brewery.city"
+          required
+        />
       </div>
       <div class="data-inputs">
         <label for="state">State</label>
-        <input type="text" class="form-control" v-model="brewery.state" required />
+        <input
+          type="text"
+          class="form-control"
+          v-model="brewery.state"
+          required
+        />
       </div>
       <div class="data-inputs">
         <label for="zipcode">Zip Code</label>
-        <input type="text" class="form-control" v-model="brewery.zipcode" required />
+        <input
+          type="text"
+          class="form-control"
+          v-model="brewery.zipcode"
+          required
+        />
       </div>
       <div class="btn-container">
         <button class="btn blue">Submit</button>
-        <button class="btn red" type="button" v-on:click="goBack">Cancel</button>
+        <button class="btn red" type="button" v-on:click="goBack">
+          Cancel
+        </button>
       </div>
       <p v-show="addBreweryError">{{ errorMessage }}</p>
     </form>
@@ -40,76 +78,74 @@
 </template>
 
 <script>
-import userService from '../services/UserService';
-import breweryService from '../services/BreweryService';
+import userService from "../services/UserService";
+import breweryService from "../services/BreweryService";
 
 export default {
-  name: 'new-brewery-form',
+  name: "new-brewery-form",
   data() {
     return {
       brewery: {
-        name: '',
+        name: "",
         userId: 0,
-        streetAddress: '',
-        city: '',
-        state: '',
-        zipcode: ''
+        streetAddress: "",
+        city: "",
+        state: "",
+        zipcode: "",
       },
       addBreweryError: false,
-      errorMessage: ''
-    }
+      errorMessage: "",
+    };
   },
   methods: {
     getUsers() {
-      userService.list()
-      .then(response => {
+      userService.list().then((response) => {
         if (response.status === 200) {
-          console.log(response);
-          this.$store.commit('SET_BEER_LOVERS', response.data);
-        } else {
-          console.log(response);
-        }
-      })
-    },
-    addBrewery() {
-      breweryService.create(this.brewery)
-      .then(response => {
-        if (response.status === 200) {
-          this.addBreweryError = false;
-          this.resetBrewery();
-          this.$router.push({ name: 'breweries' });
-        }
-      })
-      .catch(error => {
-        this.addBreweryError = true;
-        if (error.response) {
-          this.errorMessage = `${error.response.status}: ${error.response.data.error}, ${error.response.data.message}`;
-        } else if (error.request) {
-          this.errorMessage = 'Error submitting form. Server could not be reached.';
-        } else {
-          this.errorMessage = 'Error submitting form. Request could not be created.';
+          this.$store.commit("SET_BEER_LOVERS", response.data);
         }
       });
     },
+    addBrewery() {
+      breweryService
+        .create(this.brewery)
+        .then((response) => {
+          if (response.status === 200) {
+            this.addBreweryError = false;
+            this.resetBrewery();
+            this.$router.push({ name: "breweries" });
+          }
+        })
+        .catch((error) => {
+          this.addBreweryError = true;
+          if (error.response) {
+            this.errorMessage = `${error.response.status}: ${error.response.data.error}, ${error.response.data.message}`;
+          } else if (error.request) {
+            this.errorMessage =
+              "Error submitting form. Server could not be reached.";
+          } else {
+            this.errorMessage =
+              "Error submitting form. Request could not be created.";
+          }
+        });
+    },
     resetBrewery() {
       this.brewery = {
-        name: '',
+        name: "",
         user: 0,
-        streetAddress: '',
-        city: '',
-        state: '',
-        zipcode: ''
+        streetAddress: "",
+        city: "",
+        state: "",
+        zipcode: "",
       };
     },
     goBack() {
-      this.$router.push({ name: 'home' });
-    }
+      this.$router.push({ name: "home" });
+    },
   },
   created() {
     this.getUsers();
-  }
-
-}
+  },
+};
 </script>
 
 <style scoped>

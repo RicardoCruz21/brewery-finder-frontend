@@ -6,16 +6,46 @@
     </div>
     <div class="beer-card-list">
       <div v-if="emptyBeers">
-        <div class="beer-card" v-for="beer in this.$store.state.brewerBeers" v-bind:key="beer.beerId" v-bind:class="{'inactive' : !beer.active}">
-          <img v-bind:src="beer.beerImage" v-bind:alt="beer.beerName" v-on:click="viewBeer(beer.beerId)">
+        <div
+          class="beer-card"
+          v-for="beer in this.$store.state.brewerBeers"
+          v-bind:key="beer.beerId"
+          v-bind:class="{ inactive: !beer.active }"
+        >
+          <img
+            v-bind:src="beer.beerImage"
+            v-bind:alt="beer.beerName"
+            v-on:click="viewBeer(beer.beerId)"
+          />
           <div class="beer-and-rating">
-            <router-link v-bind:to="{ name: 'beers', params: {id: beer.beerId}}">{{ beer.beerName }}</router-link>
-            <p>Avg Rating: <span v-if="beer.averageRating">{{ beer.averageRating }}/5</span><span v-else>No ratings available</span></p>
+            <router-link
+              v-bind:to="{ name: 'beers', params: { id: beer.beerId } }"
+              >{{ beer.beerName }}</router-link
+            >
+            <p>
+              Avg Rating:
+              <span v-if="beer.averageRating">{{ beer.averageRating }}/5</span
+              ><span v-else>No ratings available</span>
+            </p>
           </div>
           <div class="btn-container">
-            <button class="btn green" v-on:click="viewBeer(beer.beerId)">View</button>
-            <button class="btn orange" v-show="beer.active" v-on:click="toggleActive(beer)">Active</button>
-            <button class="btn yellow" v-show="!beer.active" v-on:click="toggleActive(beer)">Inactive</button>
+            <button class="btn green" v-on:click="viewBeer(beer.beerId)">
+              View
+            </button>
+            <button
+              class="btn orange"
+              v-show="beer.active"
+              v-on:click="toggleActive(beer)"
+            >
+              Active
+            </button>
+            <button
+              class="btn yellow"
+              v-show="!beer.active"
+              v-on:click="toggleActive(beer)"
+            >
+              Inactive
+            </button>
           </div>
         </div>
       </div>
@@ -29,76 +59,72 @@
 </template>
 
 <script>
-import beerService from '../services/BeerService.js';
+import beerService from "../services/BeerService.js";
 
 export default {
-  name: 'brewer-beer-list',
+  name: "brewer-beer-list",
   data() {
     return {
-      beers: []
-    }
+      beers: [],
+      errorMessage: "",
+      successMessage: "",
+    };
   },
   computed: {
     emptyBeers() {
       return this.beers.length;
-    }
+    },
   },
   methods: {
     getBrewerBeers() {
-      beerService.listAll(this.$store.state.breweryId)
-      .then(response => {
-        if (response.status === 200) {
-          this.$store.commit('SET_BREWER_BEERS', response.data);
-          this.beers = response.data;
-        } else {
-          console.log(response.status);
-        }
-      })
-      .catch(error => {
-          let errorMessage;
-          if (error.response) {
-            errorMessage = `${error.response.status}: ${error.response.data.error}, ${error.response.data.message}`;
-          } else if (error.request) {
-            errorMessage = 'Server could not be reached.';
-          } else {
-            errorMessage = 'Request could not be created.';
+      beerService
+        .listAll(this.$store.state.breweryId)
+        .then((response) => {
+          if (response.status === 200) {
+            this.$store.commit("SET_BREWER_BEERS", response.data);
+            this.beers = response.data;
           }
-          console.log(errorMessage);
         })
+        .catch((error) => {
+          if (error.response) {
+            this.errorMessage = `${error.response.status}: ${error.response.data.error}, ${error.response.data.message}`;
+          } else if (error.request) {
+            this.errorMessage = "Server could not be reached.";
+          } else {
+            this.errorMessage = "Request could not be created.";
+          }
+        });
     },
     toggleActive(beer) {
       beer.active = !beer.active;
-      beerService.delete(beer.beerId)
-      .then(response => {
-        if (response.status === 200) {
-          console.log(response.status);
-        } else {
-          console.log(response.status);
-        }
-      })
-      .catch(error => {
-          let errorMessage;
-          if (error.response) {
-            errorMessage = `${error.response.status}: ${error.response.data.error}, ${error.response.data.message}`;
-          } else if (error.request) {
-            errorMessage = 'Server could not be reached.';
-          } else {
-            errorMessage = 'Request could not be created.';
+      beerService
+        .delete(beer.beerId)
+        .then((response) => {
+          if (response.status === 200) {
+            this.successMessage = "Beer update successful";
           }
-          console.log(errorMessage);
+        })
+        .catch((error) => {
+          if (error.response) {
+            this.errorMessage = `${error.response.status}: ${error.response.data.error}, ${error.response.data.message}`;
+          } else if (error.request) {
+            this.errorMessage = "Server could not be reached.";
+          } else {
+            this.errorMessage = "Request could not be created.";
+          }
         });
     },
     viewBeer(beerId) {
-      this.$router.push({ name: 'beers', params: { id: beerId }});
+      this.$router.push({ name: "beers", params: { id: beerId } });
     },
     addBeer() {
-      this.$router.push({ name: 'addBeer' });
-    }
+      this.$router.push({ name: "addBeer" });
+    },
   },
   created() {
     this.getBrewerBeers();
-  }
-}
+  },
+};
 </script>
 
 <style scoped>

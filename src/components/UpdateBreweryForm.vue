@@ -51,98 +51,108 @@
       </div>
       <div class="data-inputs">
         <label for="history">Brewery History</label>
-        <textarea name="history" cols="30" rows="8" class="text-area" v-model.lazy="breweryHistory"></textarea>
-      </div> 
-      
+        <textarea
+          name="history"
+          cols="30"
+          rows="8"
+          class="text-area"
+          v-model.lazy="breweryHistory"
+        ></textarea>
+      </div>
+
       <h2>Business Hours</h2>
       <div class="days-hours" v-for="hour in hours" v-bind:key="hour.hoursId">
         <label class="day">{{ hour.day }}</label>
         <div class="business-hours">
-          <input type="time" v-model="hour.openingHour">
+          <input type="time" v-model="hour.openingHour" />
           <span>to</span>
-          <input type="time" v-model="hour.closingHour">
+          <input type="time" v-model="hour.closingHour" />
         </div>
       </div>
       <div class="data-inputs">
         <h2>Brewery Status</h2>
         <div class="active-status">
-          <input class="checkbox" type="checkbox" v-model="active">
-          <span v-show="active">Active&nbsp;&nbsp;(Brewery will display in Brewery List)</span>
-          <span v-show="!active">Inactive&nbsp;&nbsp;(Brewery will not display in Brewery List)</span>
+          <input class="checkbox" type="checkbox" v-model="active" />
+          <span v-show="active"
+            >Active&nbsp;&nbsp;(Brewery will display in Brewery List)</span
+          >
+          <span v-show="!active"
+            >Inactive&nbsp;&nbsp;(Brewery will not display in Brewery
+            List)</span
+          >
         </div>
       </div>
       <div class="btn-container">
         <button class="btn blue">Update</button>
         <button class="btn red" v-on:click="goHome">Cancel</button>
       </div>
-      <p class="success" v-show="updateSuccess">{{ successMessage}}</p>
+      <p class="success" v-show="updateSuccess">{{ successMessage }}</p>
       <p class="failure" v-show="updateFailure">{{ errorMessage }}</p>
     </form>
   </div>
 </template>
 
 <script>
-import breweryService from '../services/BreweryService.js';
+import breweryService from "../services/BreweryService.js";
 
 export default {
-  name: 'update-brewery-form',
+  name: "update-brewery-form",
   data() {
     return {
       breweryId: 0,
-      breweryName: '',
-      websiteUrl: '',
-      emailAddress: '',
-      phoneNumber: '',
-      breweryLogo: '',
-      breweryImage: '',
-      breweryHistory: '',
+      breweryName: "",
+      websiteUrl: "",
+      emailAddress: "",
+      phoneNumber: "",
+      breweryLogo: "",
+      breweryImage: "",
+      breweryHistory: "",
       active: false,
       addressId: 0,
-      streetAddress: '',
-      city: '',
-      state: '',
-      zipcode: '',
+      streetAddress: "",
+      city: "",
+      state: "",
+      zipcode: "",
       hours: [],
       updateSuccess: false,
       updateFailure: false,
-      errorMessage: '',
-      successMessage: 'Update successful!'
-    }
+      errorMessage: "",
+      successMessage: "Update successful!",
+    };
   },
   methods: {
     getBrewerBrewery() {
-      breweryService.get(this.$store.state.breweryId)
-      .then(response => {
-        if (response.status === 200) {
-          this.$store.commit('SET_BREWER_BREWERY', response.data);
-          this.breweryName = response.data.breweryName;
-          this.websiteUrl = response.data.websiteUrl;
-          this.emailAddress = response.data.emailAddress;
-          this.phoneNumber = response.data.phoneNumber;
-          this.breweryLogo = response.data.breweryLogo;
-          this.breweryImage = response.data.breweryImage;
-          this.breweryHistory = response.data.breweryHistory;
-          this.active = response.data.active;
-          this.addressId = response.data.address.addressId;
-          this.streetAddress = response.data.address.streetAddress;
-          this.city = response.data.address.city;
-          this.state = response.data.address.state;
-          this.zipcode = response.data.address.zipcode;
-          this.hours = response.data.hours
-        } else {
-          console.log(response.status);
-        }
-      })
-      .catch(error => {
-          let errorMessage;
-          if (error.response) {
-            errorMessage = `${error.response.status}: ${error.response.data.error}, ${error.response.data.message}`;
-          } else if (error.request) {
-            errorMessage = 'Error submitting form. Server could not be reached.';
-          } else {
-            errorMessage = 'Error submitting form. Request could not be created.';
+      breweryService
+        .get(this.$store.state.breweryId)
+        .then((response) => {
+          if (response.status === 200) {
+            this.$store.commit("SET_BREWER_BREWERY", response.data);
+            this.breweryName = response.data.breweryName;
+            this.websiteUrl = response.data.websiteUrl;
+            this.emailAddress = response.data.emailAddress;
+            this.phoneNumber = response.data.phoneNumber;
+            this.breweryLogo = response.data.breweryLogo;
+            this.breweryImage = response.data.breweryImage;
+            this.breweryHistory = response.data.breweryHistory;
+            this.active = response.data.active;
+            this.addressId = response.data.address.addressId;
+            this.streetAddress = response.data.address.streetAddress;
+            this.city = response.data.address.city;
+            this.state = response.data.address.state;
+            this.zipcode = response.data.address.zipcode;
+            this.hours = response.data.hours;
           }
-          console.log(errorMessage);
+        })
+        .catch((error) => {
+          if (error.response) {
+            this.errorMessage = `${error.response.status}: ${error.response.data.error}, ${error.response.data.message}`;
+          } else if (error.request) {
+            this.errorMessage =
+              "Error submitting form. Server could not be reached.";
+          } else {
+            this.errorMessage =
+              "Error submitting form. Request could not be created.";
+          }
         });
     },
     updateBrewery() {
@@ -157,39 +167,42 @@ export default {
           streetAddress: this.streetAddress,
           city: this.city,
           state: this.state,
-          zipcode: this.zipcode
+          zipcode: this.zipcode,
         },
         hours: this.hours,
         phoneNumber: this.phoneNumber,
         breweryHistory: this.breweryHistory,
         breweryLogo: this.breweryLogo,
         breweryImage: this.breweryImage,
-        active: this.active
+        active: this.active,
       };
-      breweryService.update(brewery.breweryId, brewery)
-      .then(response => {
-        if (response.status === 200) {
-          this.updateSuccess = true;
-        }
-      })
-      .catch(error => {
-        if (error.response) {
-          this.errorMessage = `${error.response.status}: ${error.response.data.error}, ${error.response.data.message}`;
-        } else if (error.request) {
-          this.errorMessage = 'Error submitting form. Server could not be reached.';
-        } else {
-          this.errorMessage = 'Error submitting form. Request could not be created.';
-        }
-      });
+      breweryService
+        .update(brewery.breweryId, brewery)
+        .then((response) => {
+          if (response.status === 200) {
+            this.updateSuccess = true;
+          }
+        })
+        .catch((error) => {
+          if (error.response) {
+            this.errorMessage = `${error.response.status}: ${error.response.data.error}, ${error.response.data.message}`;
+          } else if (error.request) {
+            this.errorMessage =
+              "Error submitting form. Server could not be reached.";
+          } else {
+            this.errorMessage =
+              "Error submitting form. Request could not be created.";
+          }
+        });
     },
     goHome() {
-      this.$router.push({ name: 'home' });
-    }
+      this.$router.push({ name: "home" });
+    },
   },
   created() {
     this.getBrewerBrewery();
-  }
-}
+  },
+};
 </script>
 
 <style scoped>
@@ -225,7 +238,8 @@ h2 {
   display: flex;
   justify-content: space-between;
 }
-.brewery-info, .address-info {
+.brewery-info,
+.address-info {
   width: 384px;
 }
 .data-inputs {

@@ -2,47 +2,53 @@
   <div class="container">
     <h2>Current Selection</h2>
     <div class="beer-card-list">
-      <beer-card v-for="beer in this.$store.state.beers" v-bind:key="beer.beerId" v-bind:beer="beer"></beer-card>
+      <beer-card
+        v-for="beer in this.$store.state.beers"
+        v-bind:key="beer.beerId"
+        v-bind:beer="beer"
+      ></beer-card>
     </div>
   </div>
 </template>
 
 <script>
-import beerService from '../services/BeerService.js';
-import BeerCard from '../components/BeerCard.vue';
+import beerService from "../services/BeerService.js";
+import BeerCard from "../components/BeerCard.vue";
 
 export default {
-  name: 'beer-card-list',
+  name: "beer-card-list",
+  data() {
+    return {
+      errorMessage: "",
+    };
+  },
   components: {
-    BeerCard
+    BeerCard,
   },
   methods: {
     getBeers() {
-      beerService.listActive(this.$route.params.id)
-      .then(response => {
-        if (response.status === 200) {
-          this.$store.commit('SET_BEERS', response.data);
-        } else {
-          console.log(response.status);
-        }
-      })
-      .catch(error => {
-        let errorMessage;
-        if (error.response) {
-          errorMessage = `${error.response.status}: ${error.response.data.error}, ${error.response.data.message}`;
-        } else if (error.request) {
-          errorMessage = 'Server could not be reached.';
-        } else {
-          errorMessage = 'Request could not be created.';
-        }
-        console.log(errorMessage);
-      });
-    }
+      beerService
+        .listActive(this.$route.params.id)
+        .then((response) => {
+          if (response.status === 200) {
+            this.$store.commit("SET_BEERS", response.data);
+          }
+        })
+        .catch((error) => {
+          if (error.response) {
+            this.errorMessage = `${error.response.status}: ${error.response.data.error}, ${error.response.data.message}`;
+          } else if (error.request) {
+            this.errorMessage = "Server could not be reached.";
+          } else {
+            this.errorMessage = "Request could not be created.";
+          }
+        });
+    },
   },
   created() {
     this.getBeers();
-  }
-}
+  },
+};
 </script>
 
 <style scoped>
