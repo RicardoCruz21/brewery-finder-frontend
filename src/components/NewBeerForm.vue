@@ -5,35 +5,68 @@
       <h2>Beer Information</h2>
       <div class="data-inputs">
         <label for="name">Beer Name</label>
-        <input type="text" class="form-control" v-model="beer.beerName" required />
+        <input
+          type="text"
+          class="form-control"
+          v-model="beer.beerName"
+          required
+        />
       </div>
       <div class="data-inputs">
         <label for="type">Beer Type</label>
-        <input type="text" class="form-control" v-model="beer.beerType" required />
+        <input
+          type="text"
+          class="form-control"
+          v-model="beer.beerType"
+          required
+        />
       </div>
       <div class="data-inputs">
         <label for="abv">Beer ABV</label>
-        <input type="number" class="form-control" step="0.1" v-model="beer.beerAbv" required />
+        <input
+          type="number"
+          class="form-control"
+          step="0.1"
+          v-model="beer.beerAbv"
+          required
+        />
       </div>
+      <!-- <div class="data-inputs">
+        <p>Image Preview</p>
+        <img class="image-preview" v-bind:src="imagePreview" />
+      </div> -->
       <div class="data-inputs">
         <label for="imageLink">Beer Image Link</label>
-        <input type="text" class="form-control" v-model="beer.beerImage" required />
+        <input
+          type="text"
+          class="form-control"
+          v-model="beer.beerImage"
+          required
+        />
       </div>
       <div class="data-inputs">
         <label for="description">Beer Description</label>
-        <textarea name="description" class="text-area" cols="30" rows="8" v-model.lazy="beer.beerDescription"></textarea>
+        <textarea
+          name="description"
+          class="text-area"
+          cols="30"
+          rows="8"
+          v-model.lazy="beer.beerDescription"
+        ></textarea>
       </div>
       <div class="data-inputs">
         <label for="active">Beer Status</label>
         <div class="active-status">
-          <input class="checkbox" type="checkbox" v-model="beer.active">
+          <input class="checkbox" type="checkbox" v-model="beer.active" />
           <span v-show="beer.active">Active</span>
           <span v-show="!beer.active">Inactive</span>
         </div>
       </div>
       <div class="btn-container">
         <button class="btn blue">Submit</button>
-        <button class="btn red" type="button" v-on:click="goBack">Cancel</button>
+        <button class="btn red" type="button" v-on:click="goBack">
+          Cancel
+        </button>
       </div>
       <p v-show="addBeerError">{{ errorMessage }}</p>
     </form>
@@ -41,63 +74,70 @@
 </template>
 
 <script>
-import beerService from '../services/BeerService.js';
+import beerService from "../services/BeerService.js";
 
 export default {
-  name: 'new-beer-form',
+  name: "new-beer-form",
   data() {
     return {
       beer: {
         beerId: 0,
         breweryId: this.$store.state.breweryId,
-        beerName: '',
-        beerType: '',
+        beerName: "",
+        beerType: "",
         beerAbv: 0.0,
-        beerImage: '',
-        beerDescription: '',
-        active: false
+        beerImage: "",
+        beerDescription: "",
+        active: false,
       },
       addBeerError: false,
-      errorMessage: ''
-    }
+      errorMessage: "",
+    };
   },
   methods: {
+    // imageSelected(event) {
+    //   console.log(event);
+    //   this.beer.beerImage = event.target.files[0];
+    // },
     addBeer() {
-      beerService.create(this.beer)
-      .then(response => {
-        if (response.status === 200) {
-          this.addBeerError = false;
-          this.resetBeer();
-          this.$router.push({ name: 'manageBeers' });
-        }
-      })
-      .catch(error => {
-        this.addBeerError = true;
-        if (error.response) {
-          this.errorMessage = `${error.response.status}: ${error.response.data.error}, ${error.response.data.message}`;
-        } else if (error.request) {
-          this.errorMessage = 'Error submitting form. Server could not be reached.';
-        } else {
-          this.errorMessage = 'Error submitting form. Request could not be created.';
-        }
-      });
+      beerService
+        .create(this.beer)
+        .then((response) => {
+          if (response.status === 200) {
+            this.addBeerError = false;
+            this.resetBeer();
+            this.$router.push({ name: "manageBeers" });
+          }
+        })
+        .catch((error) => {
+          this.addBeerError = true;
+          if (error.response) {
+            this.errorMessage = `${error.response.status}: ${error.response.data.error}, ${error.response.data.message}`;
+          } else if (error.request) {
+            this.errorMessage =
+              "Error submitting form. Server could not be reached.";
+          } else {
+            this.errorMessage =
+              "Error submitting form. Request could not be created.";
+          }
+        });
     },
     resetBeer() {
       this.beer = {
         beerId: 0,
-        beerName: '',
-        beerType: '',
+        beerName: "",
+        beerType: "",
         beerAbv: 0.0,
-        beerImage: '',
-        beerDescription: '',
-        active: false
+        beerImage: "",
+        beerDescription: "",
+        active: false,
       };
     },
     goBack() {
-      this.$router.push({ name: 'manageBeers' });
-    }
-  }
-}
+      this.$router.push({ name: "manageBeers" });
+    },
+  },
+};
 </script>
 
 <style scoped>
@@ -154,6 +194,9 @@ h2 {
 }
 .checkbox {
   margin-right: 8px;
+}
+.image-preview {
+  width: 256px;
 }
 .btn-container {
   width: 256px;

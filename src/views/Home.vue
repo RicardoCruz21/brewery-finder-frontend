@@ -32,17 +32,20 @@
         </div>
       </div>
     </div>
+    <new-image-form></new-image-form>
   </div>
 </template>
 
 <script>
 import Navigation from "../components/Navigation.vue";
+import NewImageForm from "../components/NewImageForm.vue";
 import userService from "../services/UserService.js";
 
 export default {
   name: "home",
   components: {
     Navigation,
+    NewImageForm,
   },
   computed: {
     isAdmin() {
