@@ -43,10 +43,20 @@
       </div>
       <div class="data-inputs">
         <label for="logo">Brewery Logo Link</label>
+        <img
+          class="image-logo-preview"
+          v-bind:src="breweryLogo"
+          v-bind:alt="breweryName + ' logo'"
+        />
         <input type="text" class="form-control" v-model="breweryLogo" />
       </div>
       <div class="data-inputs">
         <label for="image">Brewery Image Link</label>
+        <img
+          class="image-preview"
+          v-bind:src="breweryImage"
+          v-bind:alt="breweryName + ' image'"
+        />
         <input type="text" class="form-control" v-model="breweryImage" />
       </div>
       <div class="data-inputs">
@@ -257,6 +267,12 @@ h2 {
   font-size: 16px;
   border: 1px solid hsl(208, 49%, 24%);
   padding-left: 8px;
+}
+.image-logo-preview {
+  width: 256px;
+}
+.image-preview {
+  width: 256px;
 }
 .text-area {
   font-size: 16px;
