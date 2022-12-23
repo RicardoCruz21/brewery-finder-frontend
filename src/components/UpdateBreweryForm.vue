@@ -1,7 +1,7 @@
 <template>
   <div class="container">
     <h1>Manage Brewery</h1>
-    <form class="form-card" v-on:submit.prevent="updateBrewery">
+    <form class="form-card" v-on:submit.prevent="updateEntireBrewery">
       <h2>Brewery Information</h2>
       <div class="contact-info">
         <div class="brewery-info">
@@ -45,19 +45,29 @@
         <label for="logo">Brewery Logo Link</label>
         <img
           class="image-logo-preview"
-          v-bind:src="breweryLogo"
+          v-bind:src="breweryLogoPreview"
           v-bind:alt="breweryName + ' logo'"
         />
-        <input type="text" class="form-control" v-model="breweryLogo" />
+        <input
+          type="file"
+          class="form-control"
+          v-on:change="onLogoSelected"
+          accept="image/*"
+        />
       </div>
       <div class="data-inputs">
         <label for="image">Brewery Image Link</label>
         <img
           class="image-preview"
-          v-bind:src="breweryImage"
+          v-bind:src="breweryImagePreview"
           v-bind:alt="breweryName + ' image'"
         />
-        <input type="text" class="form-control" v-model="breweryImage" />
+        <input
+          type="file"
+          class="form-control"
+          v-on:change="onImageSelected"
+          accept="image/*"
+        />
       </div>
       <div class="data-inputs">
         <label for="history">Brewery History</label>
@@ -104,6 +114,7 @@
 
 <script>
 import breweryService from "../services/BreweryService.js";
+import imageService from "../services/ImageService.js";
 
 export default {
   name: "update-brewery-form",
@@ -114,8 +125,8 @@ export default {
       websiteUrl: "",
       emailAddress: "",
       phoneNumber: "",
-      breweryLogo: "",
-      breweryImage: "",
+      breweryLogo: 0,
+      breweryImage: 0,
       breweryHistory: "",
       active: false,
       addressId: 0,
@@ -128,6 +139,12 @@ export default {
       updateFailure: false,
       errorMessage: "",
       successMessage: "Update successful!",
+      newBreweryLogo: null,
+      breweryLogoPreview: "",
+      isBreweryLogoChanged: false,
+      newBreweryImage: null,
+      breweryImagePreview: "",
+      isBreweryImageChanged: false,
     };
   },
   methods: {
@@ -151,6 +168,14 @@ export default {
             this.state = response.data.address.state;
             this.zipcode = response.data.address.zipcode;
             this.hours = response.data.hours;
+            this.breweryLogoPreview = `${
+              process.env.VUE_APP_REMOTE_API_PROD ||
+              process.env.VUE_APP_REMOTE_API_DEV
+            }/images/${response.data.breweryLogo}`;
+            this.breweryImagePreview = `${
+              process.env.VUE_APP_REMOTE_API_PROD ||
+              process.env.VUE_APP_REMOTE_API_DEV
+            }/images/${response.data.breweryImage}`;
           }
         })
         .catch((error) => {
@@ -164,6 +189,64 @@ export default {
               "Error submitting form. Request could not be created.";
           }
         });
+    },
+    onLogoSelected(event) {
+      this.newBreweryLogo = event.target.files[0];
+      this.breweryLogoPreview = URL.createObjectURL(this.newBreweryLogo);
+      this.isBreweryLogoChanged = true;
+    },
+    onImageSelected(event) {
+      this.newBreweryImage = event.target.files[0];
+      this.breweryImagePreview = URL.createObjectURL(this.newBreweryImage);
+      this.isBreweryImageChanged = true;
+    },
+    updateImage(id, newImage) {
+      return new Promise((resolve, reject) => {
+        const data = new FormData();
+        data.append("multipartImage", newImage, newImage.name);
+
+        imageService.update(id, data).then((response) => {
+          if (response.status === 200) {
+            resolve(
+              `${
+                process.env.VUE_APP_REMOTE_API_PROD ||
+                process.env.VUE_APP_REMOTE_API_DEV
+              }/images/${response.data}`
+            );
+          } else {
+            reject(new Error(`Could not update image ${newImage.name}`));
+          }
+        });
+      });
+    },
+    updateEntireBrewery() {
+      if (this.isBreweryLogoChanged && this.isBreweryImageChanged) {
+        this.updateImage(this.breweryLogo, this.newBreweryLogo)
+          .then((response) => {
+            console.log(response);
+            return this.updateImage(this.breweryImage, this.newBreweryImage);
+          })
+          .then((response) => {
+            console.log(response);
+            this.updateBrewery();
+          });
+      } else if (this.isBreweryLogoChanged) {
+        this.updateImage(this.breweryLogo, this.newBreweryLogo).then(
+          (response) => {
+            console.log(response);
+            this.updateBrewery();
+          }
+        );
+      } else if (this.isBreweryImageChanged) {
+        this.updateImage(this.breweryImage, this.newBreweryImage).then(
+          (response) => {
+            console.log(response);
+            this.updateBrewery();
+          }
+        );
+      } else {
+        this.updateBrewery();
+      }
     },
     updateBrewery() {
       const brewery = {

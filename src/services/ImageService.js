@@ -1,9 +1,9 @@
 import axios from "axios";
 
 export default {
-  list() {
-    return axios.get("/images");
-  },
+  // list() {
+  //   return axios.get("/images");
+  // },
 
   get(id) {
     return axios.get(`/images/${id}`);
@@ -14,6 +14,6 @@ export default {
   },
 
   update(id, image) {
-    return axios.put(`/breweries/${id}`, image);
+    return axios.put(`/images/${id}`, image);
   },
 };
