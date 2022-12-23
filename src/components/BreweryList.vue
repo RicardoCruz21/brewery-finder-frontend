@@ -8,7 +8,7 @@
         v-bind:key="brewery.breweryId"
       >
         <img
-          v-bind:src="brewery.breweryLogo"
+          v-bind:src="imagelink + brewery.breweryLogo"
           v-bind:alt="brewery.breweryName"
           v-on:click="goToBrewery(brewery.breweryId)"
         />
@@ -28,6 +28,14 @@ import breweryService from "../services/BreweryService.js";
 
 export default {
   name: "brewery-list",
+  data() {
+    return {
+      imagelink: `${
+        process.env.VUE_APP_REMOTE_API_PROD ||
+        process.env.VUE_APP_REMOTE_API_DEV
+      }/images/`,
+    };
+  },
   methods: {
     getBreweries() {
       breweryService.list().then((response) => {

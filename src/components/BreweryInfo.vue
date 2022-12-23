@@ -6,7 +6,7 @@
         <div class="img-container">
           <img
             class="brewery-logo"
-            v-bind:src="breweryLogo"
+            v-bind:src="showLogo"
             v-bind:alt="breweryName + ' logo'"
           />
         </div>
@@ -47,7 +47,7 @@
       <div class="brewery-description">
         <img
           class="brewery-image"
-          v-bind:src="breweryImage"
+          v-bind:src="showImage"
           v-bind:alt="breweryName + ' image'"
         />
         <div class="brewery-history">
@@ -83,6 +83,18 @@ export default {
     };
   },
   computed: {
+    showLogo() {
+      return `${
+        process.env.VUE_APP_REMOTE_API_PROD ||
+        process.env.VUE_APP_REMOTE_API_DEV
+      }/images/${this.breweryLogo}`;
+    },
+    showImage() {
+      return `${
+        process.env.VUE_APP_REMOTE_API_PROD ||
+        process.env.VUE_APP_REMOTE_API_DEV
+      }/images/${this.breweryImage}`;
+    },
     address() {
       return `${this.city}, ${this.state} ${this.zipcode}`;
     },
