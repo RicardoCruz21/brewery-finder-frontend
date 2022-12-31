@@ -2,7 +2,11 @@
   <div class="container">
     <h1>{{ beerName }}</h1>
     <div class="beer-info">
-      <img class="beer-image" v-bind:src="beerImage" v-bind:alt="beerName" />
+      <img
+        class="beer-image"
+        v-bind:src="showBeerImage"
+        v-bind:alt="beerName"
+      />
       <div class="beer-details">
         <h2>Beer Information</h2>
         <div class="beer-data">
@@ -54,6 +58,14 @@ export default {
       averageRating: 0,
       errorMessage: "",
     };
+  },
+  computed: {
+    showBeerImage() {
+      return `${
+        process.env.VUE_APP_REMOTE_API_PROD ||
+        process.env.VUE_APP_REMOTE_API_DEV
+      }/images/${this.beerImage}`;
+    },
   },
   methods: {
     getCurrentBeer() {

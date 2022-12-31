@@ -13,7 +13,7 @@
           v-bind:class="{ inactive: !beer.active }"
         >
           <img
-            v-bind:src="beer.beerImage"
+            v-bind:src="imagelink + beer.beerImage"
             v-bind:alt="beer.beerName"
             v-on:click="viewBeer(beer.beerId)"
           />
@@ -69,6 +69,10 @@ export default {
   data() {
     return {
       beers: [],
+      imagelink: `${
+        process.env.VUE_APP_REMOTE_API_PROD ||
+        process.env.VUE_APP_REMOTE_API_DEV
+      }/images/`,
       errorMessage: "",
       successMessage: "",
     };
@@ -193,6 +197,7 @@ h2 {
 }
 img {
   width: 240px;
+  height: 240px;
   border-radius: 16px;
 }
 img:hover {
