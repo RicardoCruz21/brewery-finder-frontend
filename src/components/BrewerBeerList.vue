@@ -32,6 +32,9 @@
             <button class="btn green" v-on:click="viewBeer(beer.beerId)">
               View
             </button>
+            <button class="btn purple" v-on:click="updateBeer(beer.beerId)">
+              Update
+            </button>
             <button
               class="btn orange"
               v-show="beer.active"
@@ -116,6 +119,9 @@ export default {
     },
     viewBeer(beerId) {
       this.$router.push({ name: "beers", params: { id: beerId } });
+    },
+    updateBeer(beerId) {
+      this.$router.push({ name: "updateBeer", params: { id: beerId } });
     },
     addBeer() {
       this.$router.push({ name: "addBeer" });
@@ -222,6 +228,9 @@ a {
 }
 .yellow {
   background-color: #ffc107;
+}
+.purple {
+  background-color: #6610f2;
 }
 .inactive {
   background-color: hsl(240, 2%, 79%);
