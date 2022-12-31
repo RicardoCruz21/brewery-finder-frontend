@@ -1,20 +1,21 @@
-import Vue from 'vue'
-import Router from 'vue-router'
-import Home from '../views/Home.vue'
-import Login from '../views/Login.vue'
-import Logout from '../views/Logout.vue'
-import Register from '../views/Register.vue'
-import store from '../store/index'
-import Breweries from '../views/Breweries.vue'
-import Brewery from '../views/Brewery.vue'
-import NewBrewery from '../views/NewBrewery.vue'
-import ManageBrewery from '../views/ManageBrewery.vue'
-import ManageBeers from '../views/ManageBeers.vue'
-import NewBeer from '../views/NewBeer.vue'
-import BeerDetail from '../views/BeerDetail.vue'
-import NewReview from '../views/NewReview.vue'
+import Vue from "vue";
+import Router from "vue-router";
+import Home from "../views/Home.vue";
+import Login from "../views/Login.vue";
+import Logout from "../views/Logout.vue";
+import Register from "../views/Register.vue";
+import store from "../store/index";
+import Breweries from "../views/Breweries.vue";
+import Brewery from "../views/Brewery.vue";
+import NewBrewery from "../views/NewBrewery.vue";
+import ManageBrewery from "../views/ManageBrewery.vue";
+import ManageBeers from "../views/ManageBeers.vue";
+import NewBeer from "../views/NewBeer.vue";
+import UpdateBeer from "../views/UpdateBeer.vue";
+import BeerDetail from "../views/BeerDetail.vue";
+import NewReview from "../views/NewReview.vue";
 
-Vue.use(Router)
+Vue.use(Router);
 
 /**
  * The Vue Router is used to "direct" the browser to render a specific view component
@@ -26,114 +27,122 @@ Vue.use(Router)
  */
 
 const router = new Router({
-  mode: 'history',
+  mode: "history",
   base: process.env.BASE_URL,
   routes: [
     {
-      path: '/',
-      name: 'home',
+      path: "/",
+      name: "home",
       component: Home,
       meta: {
-        requiresAuth: true
-      }
+        requiresAuth: true,
+      },
     },
     {
       path: "/login",
       name: "login",
       component: Login,
       meta: {
-        requiresAuth: false
-      }
+        requiresAuth: false,
+      },
     },
     {
       path: "/logout",
       name: "logout",
       component: Logout,
       meta: {
-        requiresAuth: false
-      }
+        requiresAuth: false,
+      },
     },
     {
       path: "/register",
       name: "register",
       component: Register,
       meta: {
-        requiresAuth: false
-      }
+        requiresAuth: false,
+      },
     },
     {
       path: "/breweries",
       name: "breweries",
       component: Breweries,
       meta: {
-        requiresAuth: true
-      }
+        requiresAuth: true,
+      },
     },
     {
       path: "/breweries/:id",
       name: "brewery",
       component: Brewery,
       meta: {
-        requiresAuth: true
-      }
+        requiresAuth: true,
+      },
     },
     {
       path: "/addBrewery",
       name: "addBrewery",
       component: NewBrewery,
       meta: {
-        requiresAuth: true
-      }
+        requiresAuth: true,
+      },
     },
     {
       path: "/manageBrewery",
       name: "manageBrewery",
       component: ManageBrewery,
       meta: {
-        requiresAuth: true
-      }
+        requiresAuth: true,
+      },
     },
     {
       path: "/manageBeers",
       name: "manageBeers",
       component: ManageBeers,
       meta: {
-        requiresAuth: true
-      }
+        requiresAuth: true,
+      },
     },
     {
       path: "/addBeer",
       name: "addBeer",
       component: NewBeer,
       meta: {
-        requiresAuth: true
-      }
+        requiresAuth: true,
+      },
+    },
+    {
+      path: "/updateBeer/:id",
+      name: "updateBeer",
+      component: UpdateBeer,
+      meta: {
+        requiresAuth: true,
+      },
     },
     {
       path: "/beers/:id",
       name: "beers",
       component: BeerDetail,
       meta: {
-        requiresAuth: true
-      }
+        requiresAuth: true,
+      },
     },
     {
       path: "/addReview",
       name: "addReview",
       component: NewReview,
       meta: {
-        requiresAuth: true
-      }
-    }
-  ]
-})
+        requiresAuth: true,
+      },
+    },
+  ],
+});
 
 router.beforeEach((to, from, next) => {
   // Determine if the route requires Authentication
-  const requiresAuth = to.matched.some(x => x.meta.requiresAuth);
+  const requiresAuth = to.matched.some((x) => x.meta.requiresAuth);
 
   // If it does and they are not logged in, send the user to "/login"
-  if (requiresAuth && store.state.token === '') {
+  if (requiresAuth && store.state.token === "") {
     next("/login");
   } else {
     // Else let them go to their next destination
