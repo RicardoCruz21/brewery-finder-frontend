@@ -223,24 +223,24 @@ export default {
       if (this.isBreweryLogoChanged && this.isBreweryImageChanged) {
         this.updateImage(this.breweryLogo, this.newBreweryLogo)
           .then((response) => {
-            console.log(response);
+            //console.log(response);
             return this.updateImage(this.breweryImage, this.newBreweryImage);
           })
           .then((response) => {
-            console.log(response);
+            //console.log(response);
             this.updateBrewery();
           });
       } else if (this.isBreweryLogoChanged) {
         this.updateImage(this.breweryLogo, this.newBreweryLogo).then(
           (response) => {
-            console.log(response);
+            //console.log(response);
             this.updateBrewery();
           }
         );
       } else if (this.isBreweryImageChanged) {
         this.updateImage(this.breweryImage, this.newBreweryImage).then(
           (response) => {
-            console.log(response);
+            //console.log(response);
             this.updateBrewery();
           }
         );

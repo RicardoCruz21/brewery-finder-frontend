@@ -184,7 +184,7 @@ export default {
     updateEntireBeer() {
       if (this.isBeerImageChanged) {
         this.updateImage(this.beerImage, this.newBeerImage).then((response) => {
-          console.log(response);
+          //console.log(response);
           this.updateBeer();
         });
       } else {
