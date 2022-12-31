@@ -222,28 +222,20 @@ export default {
     updateEntireBrewery() {
       if (this.isBreweryLogoChanged && this.isBreweryImageChanged) {
         this.updateImage(this.breweryLogo, this.newBreweryLogo)
-          .then((response) => {
-            //console.log(response);
+          .then(() => {
             return this.updateImage(this.breweryImage, this.newBreweryImage);
           })
-          .then((response) => {
-            //console.log(response);
+          .then(() => {
             this.updateBrewery();
           });
       } else if (this.isBreweryLogoChanged) {
-        this.updateImage(this.breweryLogo, this.newBreweryLogo).then(
-          (response) => {
-            //console.log(response);
-            this.updateBrewery();
-          }
-        );
+        this.updateImage(this.breweryLogo, this.newBreweryLogo).then(() => {
+          this.updateBrewery();
+        });
       } else if (this.isBreweryImageChanged) {
-        this.updateImage(this.breweryImage, this.newBreweryImage).then(
-          (response) => {
-            //console.log(response);
-            this.updateBrewery();
-          }
-        );
+        this.updateImage(this.breweryImage, this.newBreweryImage).then(() => {
+          this.updateBrewery();
+        });
       } else {
         this.updateBrewery();
       }
