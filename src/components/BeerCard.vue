@@ -1,6 +1,10 @@
 <template>
   <div class="beer-card">
-    <img v-bind:src="this.beer.beerImage" v-bind:alt="this.beer.beerName" v-on:click="goToBeer">
+    <img
+      v-bind:src="imagelink + this.beer.beerImage"
+      v-bind:alt="this.beer.beerName"
+      v-on:click="goToBeer"
+    />
     <div class="beer-info">
       <p>{{ this.beer.beerName }}</p>
       <p>{{ this.beer.beerType }}</p>
@@ -10,14 +14,22 @@
 
 <script>
 export default {
-  name: 'beer-card',
-  props: ['beer'],
+  name: "beer-card",
+  props: ["beer"],
+  data() {
+    return {
+      imagelink: `${
+        process.env.VUE_APP_REMOTE_API_PROD ||
+        process.env.VUE_APP_REMOTE_API_DEV
+      }/images/`,
+    };
+  },
   methods: {
     goToBeer() {
-      this.$router.push({name: 'beers', params: {id: this.beer.beerId}});
-    }
-  }
-}
+      this.$router.push({ name: "beers", params: { id: this.beer.beerId } });
+    },
+  },
+};
 </script>
 
 <style scoped>

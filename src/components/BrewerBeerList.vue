@@ -13,7 +13,7 @@
           v-bind:class="{ inactive: !beer.active }"
         >
           <img
-            v-bind:src="beer.beerImage"
+            v-bind:src="imagelink + beer.beerImage"
             v-bind:alt="beer.beerName"
             v-on:click="viewBeer(beer.beerId)"
           />
@@ -31,6 +31,9 @@
           <div class="btn-container">
             <button class="btn green" v-on:click="viewBeer(beer.beerId)">
               View
+            </button>
+            <button class="btn purple" v-on:click="updateBeer(beer.beerId)">
+              Update
             </button>
             <button
               class="btn orange"
@@ -66,6 +69,10 @@ export default {
   data() {
     return {
       beers: [],
+      imagelink: `${
+        process.env.VUE_APP_REMOTE_API_PROD ||
+        process.env.VUE_APP_REMOTE_API_DEV
+      }/images/`,
       errorMessage: "",
       successMessage: "",
     };
@@ -116,6 +123,9 @@ export default {
     },
     viewBeer(beerId) {
       this.$router.push({ name: "beers", params: { id: beerId } });
+    },
+    updateBeer(beerId) {
+      this.$router.push({ name: "updateBeer", params: { id: beerId } });
     },
     addBeer() {
       this.$router.push({ name: "addBeer" });
@@ -187,6 +197,7 @@ h2 {
 }
 img {
   width: 240px;
+  height: 240px;
   border-radius: 16px;
 }
 img:hover {
@@ -222,6 +233,9 @@ a {
 }
 .yellow {
   background-color: #ffc107;
+}
+.purple {
+  background-color: #6610f2;
 }
 .inactive {
   background-color: hsl(240, 2%, 79%);
