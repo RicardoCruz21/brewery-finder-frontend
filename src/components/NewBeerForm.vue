@@ -1,7 +1,7 @@
 <template>
   <div class="container">
     <h1>Add a Beer</h1>
-    <form class="form-card" v-on:submit.prevent="addBeer">
+    <form class="form-card" v-on:submit.prevent="createBeer">
       <h2>Beer Information</h2>
       <div class="data-inputs">
         <label for="name">Beer Name</label>
@@ -31,11 +31,21 @@
           required
         />
       </div>
-      <!-- <div class="data-inputs">
-        <p>Image Preview</p>
-        <img class="image-preview" v-bind:src="imagePreview" />
-      </div> -->
       <div class="data-inputs">
+        <label for="beerImage">Beer Image</label>
+        <img
+          class="beer-image-preview"
+          v-bind:src="beerImagePreview"
+          v-bind:alt="beer.beerName + ' image'"
+        />
+        <input
+          type="file"
+          class="form-control"
+          v-on:change="onImageSelected"
+          accept="image/*"
+        />
+      </div>
+      <!-- <div class="data-inputs">
         <label for="imageLink">Beer Image Link</label>
         <input
           type="text"
@@ -43,7 +53,7 @@
           v-model="beer.beerImage"
           required
         />
-      </div>
+      </div> -->
       <div class="data-inputs">
         <label for="description">Beer Description</label>
         <textarea
@@ -75,6 +85,7 @@
 
 <script>
 import beerService from "../services/BeerService.js";
+import imageService from "../services/ImageService.js";
 
 export default {
   name: "new-beer-form",
@@ -86,19 +97,35 @@ export default {
         beerName: "",
         beerType: "",
         beerAbv: 0.0,
-        beerImage: "",
+        beerImage: 0,
         beerDescription: "",
         active: false,
       },
+      newBeerImage: null,
+      beerImagePreview: "",
       addBeerError: false,
       errorMessage: "",
     };
   },
   methods: {
-    // imageSelected(event) {
-    //   console.log(event);
-    //   this.beer.beerImage = event.target.files[0];
-    // },
+    onImageSelected(event) {
+      this.newBeerImage = event.target.files[0];
+      this.beerImagePreview = URL.createObjectURL(this.newBeerImage);
+    },
+    uploadImage(newImage) {
+      return new Promise((resolve, reject) => {
+        const data = new FormData();
+        data.append("multipartImage", newImage, newImage.name);
+
+        imageService.create(data).then((response) => {
+          if (response.status === 200) {
+            resolve(response.data);
+          } else {
+            reject(new Error(`Could not uploadimage ${newImage.name}`));
+          }
+        });
+      });
+    },
     addBeer() {
       beerService
         .create(this.beer)
@@ -122,13 +149,20 @@ export default {
           }
         });
     },
+    createBeer() {
+      this.uploadImage(this.newBeerImage)
+      .then((response) => {
+        this.beer.beerImage = response;
+        this.addBeer();
+      });
+    },
     resetBeer() {
       this.beer = {
         beerId: 0,
         beerName: "",
         beerType: "",
         beerAbv: 0.0,
-        beerImage: "",
+        beerImage: 0,
         beerDescription: "",
         active: false,
       };
@@ -195,7 +229,7 @@ h2 {
 .checkbox {
   margin-right: 8px;
 }
-.image-preview {
+.beer-image-preview {
   width: 256px;
 }
 .btn-container {
